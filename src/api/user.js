@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/union/union/loginUnion',
     method: 'post',
     data
   })
@@ -10,9 +10,9 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '/union/unionUser/getLoginInfo',
     method: 'get',
-    params: { token }
+    params: { 'X-Token': token }
   })
 }
 

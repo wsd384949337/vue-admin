@@ -53,7 +53,7 @@ https://github.com/PanJiaChen/vue-element-admin/blob/master/README.zh-CN.md
 
 富文本编辑器：vue+ueditor，沿用之前的富文本编辑器
 
-导出excel：要导出所有数据，只能后端传文件，前端a标签下载
+导出excel：导出选中列和当前页已经可以实现。导出全部，后端传文件，前端a标签下载
 
 table更多下拉框：Dropdown 下拉菜单，自定义
 

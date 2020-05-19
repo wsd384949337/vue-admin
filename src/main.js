@@ -8,6 +8,9 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
 
+// 全局组件 删除按钮等
+import './globalComponents'
+
 import App from './App'
 import store from './store'
 import router from './router'

@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '气泡语音公会管理系统',
 
   /**
    * @type {boolean} true | false
