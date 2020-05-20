@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getUnionApplys(type) {
+export function getUnionApplys(type, url) {
   return request({
-    url: '/union/unionApply/getUnionApplys?applyType=' + type,
+    url: '/union/unionApply/getUnionApplys?applyType=' + type + '&' + url,
     method: 'get'
   })
 }

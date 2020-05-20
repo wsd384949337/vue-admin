@@ -1,25 +1,34 @@
 <template>
   <div class="app-container">
     <cus-wraper>
-<!--      <cus-filter-wraper>-->
-<!--        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>-->
-<!--      </cus-filter-wraper>-->
+      <cus-filter-wraper>
+        <div>
+          <el-input  v-model="listQuery.unionNum" placeholder="请输入公会ID" style="width:200px;margin: 0 10px;" clearable></el-input>
+          <el-button type="primary" @click="getList" icon="el-icon-search">查询</el-button>
+          <el-button type="info" @click="reGetList" icon="el-icon-search">重置</el-button>
+        </div>
+        <el-button type="primary" @click="handleCreate" icon="el-icon-search">创建工会</el-button>
+      </cus-filter-wraper>
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
           <el-table-column label="公会名称" prop="unionName" align="center" width="165"></el-table-column>
           <el-table-column label="公会ID" prop="unionNum" align="center" width="165"></el-table-column>
           <el-table-column label="会长昵称" prop="userName" align="center" width="165"></el-table-column>
-          <el-table-column label="会长头像" prop="headPicture" align="center" width="165"></el-table-column>
+          <el-table-column label="会长头像" prop="headPicture" align="center" width="165">
+            <template slot-scope="scope">
+              <img :src="scope.row.headPicture" style="width: 50px;border-radius: 25px;" alt="">
+            </template>
+          </el-table-column>
           <el-table-column label="创建时间" prop="createdTime" align="center" width="165"></el-table-column>
-<!--          <el-table-column  align="right" :label="操作">-->
-<!--            <template slot-scope="scope">-->
-<!--              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>-->
-<!--                修改-->
-<!--              </el-button>-->
+          <el-table-column  align="right" :label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>
+                解散工会
+              </el-button>
 <!--              <cus-del-btn @ok="handleDelete(scope.row)"/>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
+            </template>
+          </el-table-column>
         </el-table>
         <!-- 分页 -->
         <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
@@ -30,11 +39,12 @@
           <el-form-item label="公会名称:" prop="unionId">
             <el-input v-model="form.unionId"></el-input>
           </el-form-item>
-          <el-form-item label="分组名称:" prop="labelName">
-            <el-input v-model="form.labelName"></el-input>
+          <el-form-item label="公会类型:" prop="type">
+            <el-radio v-model="form.type" label="0">娱乐</el-radio>
+            <el-radio v-model="form.type" label="1">派单</el-radio>
           </el-form-item>
-          <el-form-item label="备注:" prop="remarks">
-            <el-input v-model="form.remarks"></el-input>
+          <el-form-item label="密码:" prop="password">
+            <el-input v-model="form.password"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -48,7 +58,7 @@
 
 <script>
   import { getUnions, addLabel, updateLabel, removeLabel } from '@/api/guild/turnover'
-
+  import { getUser } from '@/utils/auth'
   export default {
     data() {
       return {
@@ -59,13 +69,13 @@
         listQuery: {
           page: 1,
           limit: 10,
-          labelName: undefined
+          unionNum: undefined
         },
         input: '',
         form: {
-          unionName: undefined, //主键ID
-          labelName: undefined, //主键ID
-          remarks: undefined, //主键ID
+          unionId: undefined, //主键ID
+          type: '0', //主键ID
+          password: undefined, //主键ID
         },
         dialogStatus: '',
         titleMap: {
@@ -73,9 +83,15 @@
           create: '创建'
         },
         rules: {
-          labelName: [
-            {required: true, message: '请输入名称', trigger: 'blur'},
-          ]
+          unionId: [
+            {required: true, message: '请输入', trigger: 'blur'},
+          ],
+          type: [
+            {required: true, message: '请输入', trigger: 'blur'},
+          ],
+          password: [
+            {required: true, message: '请输入', trigger: 'blur'},
+          ],
         }
       }
     },
@@ -85,12 +101,22 @@
     methods: {
       getList() {
         this.listLoading = true;
-        getUnions(this.listQuery).then(response => {
-          console.log(response.records)
-          this.list = response.data.records
+        let addUrl = ''
+        if(this.listQuery.page !== 1){ addUrl = 'pageNum=' + this.listQuery.page + '&'  }
+        if(this.listQuery.limit !== 10){  addUrl = 'pageSize=' + this.listQuery.page + '&'  }
+        if(this.listQuery.unionNum !== undefined){  addUrl = 'unionNum=' + this.listQuery.unionNum + '&'  }
+        getUnions(addUrl).then(response => {
+          this.list = [response.data.records[0]]
           this.total = response.data.total
           this.listLoading = false
         })
+      },
+      reGetList(){
+        this.listQuery= {
+          page: 1,
+          limit: 10,
+          unionNum: undefined
+        }
       },
       handleCreate() {
         this.resetForm()
@@ -99,9 +125,9 @@
       },
       handleUpdate(row) {
         //updateLabel
-        this.form = Object.assign({}, row)
-        this.dialogStatus = 'update'
-        this.dialogVisible = true
+        // this.form = Object.assign({}, row)
+        // this.dialogStatus = 'update'
+        // this.dialogVisible = true
       },
       handleDelete(row) {
         let data = {'id' : row.id}
@@ -115,40 +141,30 @@
         })
       },
       submitForm() {
+        let user = JSON.parse(getUser())[0]
+        this.form.userId = user.id
         this.$refs.dataForm.validate(valid => {
           if (valid) {
-            if(this.dialogStatus === 'create'){
-              addLabel(this.form).then(response => {
-                if (response.code == 0) {
-                  this.getList()
-                  // this.submitOk(response.message)
-                  this.dialogVisible = false
-                } else {
-                  // this.submitFail(response.message)
-                }
-              }).catch(err => {
-                console.log(err)
-              })
-            }else{
-              updateLabel(this.form).then(response => {
-                if (response.code == 0) {
-                  this.getList()
-                  // this.submitOk(response.message)
-                  this.dialogVisible = false
-                } else {
-                  // this.submitFail(response.message)
-                }
-              }).catch(err => {
-                console.log(err)
-              })
-            }
+            addLabel(this.form).then(response => {
+              if (response.code == 0) {
+                this.getList()
+                // this.submitOk(response.message)
+                this.dialogVisible = false
+              } else {
+                // this.submitFail(response.message)
+              }
+            }).catch(err => {
+              console.log(err)
+            })
 
           }
         })
       },
       resetForm() {
         this.form = {
-          id: undefined, //主键ID
+          unionId: undefined, //主键ID
+          type: '0', //主键ID
+          password: undefined, //主键ID
         }
       },
       // 监听dialog关闭时的处理事件
@@ -168,7 +184,7 @@
   }
   .filter-wraper{
     display: flex;
-    flex-direction: row-reverse;
+    justify-content: space-between;
   }
   .table-container /deep/ .el-table .cell{
     display:flex;

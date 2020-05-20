@@ -58,31 +58,31 @@ export const constantRoutes = [
     path: '/guild',
     component: Layout,
     name: 'Guild',
-    meta: { title: '公会管理', icon: 'example' },
+    meta: { title: '公会管理', icon: 'guild' },
     children: [
       {
         path: 'member',
         name: 'member',
         component: () => import('@/views/guild/member'),
-        meta: { title: '公会成员', icon: 'user' }
+        meta: { title: '公会成员', icon: 'member' }
       },
       {
         path: 'join',
         name: 'join',
         component: () => import('@/views/guild/join'),
-        meta: { title: '申请加入', icon: 'eye-open' }
+        meta: { title: '申请加入', icon: 'join' }
       },
       {
         path: 'quit',
         name: 'quit',
         component: () => import('@/views/guild/quit'),
-        meta: { title: '申请退出', icon: 'eye' }
+        meta: { title: '申请退出', icon: 'quit' }
       },
       {
         path: 'sort',
         name: 'sort',
         component: () => import('@/views/guild/sort'),
-        meta: { title: '分组管理', icon: 'tree' }
+        meta: { title: '分组管理', icon: 'sort' }
       }
     ]
   },

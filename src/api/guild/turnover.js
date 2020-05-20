@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getUnions() {
+export function getUnions(url) {
   return request({
-    url: '/union/union/getUnions',
+    url: '/union/union/getUnions?' + url ,
     method: 'get'
   })
 }
@@ -17,7 +17,7 @@ export function removeLabel(data) {
 
 export function addLabel(data) {
   return request({
-    url: '/union/unionLabel/addLabel',
+    url: '/union/union/createUnion',
     method: 'post',
     data
   })

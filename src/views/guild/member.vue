@@ -2,21 +2,24 @@
   <div class="app-container">
     <cus-wraper>
       <cus-filter-wraper>
-        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>
+        <el-input  v-model="listQuery.userCode" placeholder="请输入用户Code" style="width:200px;margin: 0 10px;" clearable></el-input>
+        <el-button type="primary" @click="getList" icon="el-icon-search">查询</el-button>
+        <el-button type="info" @click="reGetList" icon="el-icon-search">重置</el-button>
       </cus-filter-wraper>
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
           <el-table-column label="用户编号" prop="userId" align="center" width="165"></el-table-column>
+          <el-table-column label="用户Code" prop="userCode" align="center" width="165"></el-table-column>
           <el-table-column label="所属公会" prop="unionName" align="center" width="165"></el-table-column>
-          <el-table-column label="所属分组" prop="userId" align="center" width="165"></el-table-column>
-          <el-table-column label="昵称" prop="userName" align="center" width="165"></el-table-column>
+          <el-table-column label="所属分组" prop="labelName" align="center" width="165"></el-table-column>
+          <el-table-column label="昵称" prop="userName" align="center" width="265"></el-table-column>
           <el-table-column label="头像" prop="headPicture" align="center" width="165">
             <template slot-scope="scope">
               <img :src="scope.row.headPicture" class="headImg" alt="">
             </template>
           </el-table-column>
-          <el-table-column  align="right" :label="操作">
+          <el-table-column  align="right" label="操作">
             <template slot-scope="scope">
 <!--              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>-->
 <!--                修改-->
@@ -36,9 +39,19 @@
       </div>
 
       <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
-        <el-form ref="dataForm" :model="form" :rules="rules" label-width="80px" class="demo-ruleForm">
-          <el-form-item label="名称:" prop="labelName">
-            <el-input v-model="form.labelName"></el-input>
+        <el-form ref="dataForm" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
+          <el-form-item label="昵称:" prop="userName">{{form.userName}}</el-form-item>
+          <el-form-item label="所属公会:" prop="unionName">{{form.unionName}}</el-form-item>
+          <el-form-item label="所属分组:" prop="labelName">{{form.userId}}</el-form-item>
+          <el-form-item label="设置分组:" prop="labelName">
+            <el-select v-model="form.labelName" placeholder="请选择">
+              <el-option
+                v-for="item in labelList"
+                :key="item.id"
+                :label="item.labelName"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -52,6 +65,7 @@
 
 <script>
   import { getUionUsers, saveSysUser, deleteSysUser, deleteUser, bindLabel } from '@/api/guild/member'
+  import { getLabels } from '@/api/guild/sort'
   import { getUser } from '@/utils/auth'
 
   export default {
@@ -64,7 +78,7 @@
         listQuery: {
           page: 1,
           limit: 10,
-          labelName: undefined
+          userCode: undefined
         },
         input: '',
         form: {
@@ -72,27 +86,46 @@
         },
         dialogStatus: '',
         titleMap: {
-          update: '编辑',
+          update: '修改分组',
           create: '创建'
         },
         rules: {
           labelName: [
             {required: true, message: '请输入名称', trigger: 'blur'},
           ]
-        }
+        },
+        labelList:[],
       }
     },
     created() {
       this.getList()
+      this.getLabels()
     },
     methods: {
       getList() {
         this.listLoading = true;
-        getUionUsers(this.listQuery).then(response => {
+        let addUrl = ''
+        if(this.listQuery.page !== 1){ addUrl += 'pageNum=' + this.listQuery.page + '&'  }
+        if(this.listQuery.limit !== 10){  addUrl += 'pageSize=' + this.listQuery.page + '&'  }
+        if(this.listQuery.userCode !== undefined){  addUrl += 'userCode=' + this.listQuery.userCode + '&'  }
+        getUionUsers(addUrl).then(response => {
           console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
+        })
+      },
+      reGetList(){
+        this.listQuery= {
+          page: 1,
+          limit: 10,
+          userCode: undefined
+        }
+      },
+      getLabels(){
+        getLabels().then(response => {
+          // console.log(response.records)
+          this.labelList = response.data.records
         })
       },
       handleCreate() {
@@ -117,19 +150,24 @@
         // })
       },
       submitForm() {
+        console.log(this.form)
+        let data = {
+          "labelId": this.form.labelName,
+          "unionUserId": this.form.id
+        }
         this.$refs.dataForm.validate(valid => {
           if (valid) {
-            // saveSysUser(this.form).then(response => {
-            //   if (response.code == 0) {
-            //     this.getList()
-            //     this.submitOk(response.message)
-            //     this.dialogVisible = false
-            //   } else {
-            //     this.submitFail(response.message)
-            //   }
-            // }).catch(err => {
-            //   console.log(err)
-            // })
+            bindLabel(data).then(response => {
+              if (response.code == 0) {
+                this.getList()
+                // this.submitOk(response.message)
+                this.dialogVisible = false
+              } else {
+                this.submitFail(response.message)
+              }
+            }).catch(err => {
+              console.log(err)
+            })
           }
         })
       },
@@ -155,7 +193,11 @@
           this.getList()
         })
       },
-      changeLabel(){}
+      changeLabel(data){
+        this.form = Object.assign({}, data)
+        this.dialogStatus = 'update'
+        this.dialogVisible = true
+      }
 
     }
   }
@@ -168,12 +210,12 @@
   }
   .filter-wraper{
     display: flex;
-    flex-direction: row-reverse;
   }
   .table-container /deep/ .el-table .cell{
     display:flex;
   }
   .headImg{
     width:50px;
+    border-radius: 25px;
   }
 </style>

@@ -52,6 +52,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       let user = JSON.parse(getUser())[0]
+      console.log(user)
       getInfo(user.userId).then(response => {
         const { data } = response
         if (!data) {

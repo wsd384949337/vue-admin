@@ -16,7 +16,7 @@
               {{ scope.row.state == 0 ?'申请中':scope.row.state == 1?'通过':'驳回' }}
             </template>
           </el-table-column>
-          <el-table-column  align="right" :label="操作">
+          <el-table-column  align="right" label="操作">
             <template slot-scope="scope">
               <el-button v-if="scope.row.state === 0" size="mini" type="primary" @click="successRow(scope.row, 1)" icon="el-icon-success" plain>
                 同意

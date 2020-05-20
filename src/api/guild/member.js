@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getUionUsers() {
+export function getUionUsers(url) {
   return request({
-    url: '/union/unionUser/getUionUsers',
+    url: '/union/unionUser/getUionUsers?' + url,
     method: 'get'
   })
 }
@@ -32,7 +32,7 @@ export function deleteUser(data) {
 
 export function bindLabel(data) {
   return request({
-    url: '/union/union/bindLabel',
+    url: '/union/unionUser/bindLabel',
     method: 'post',
     data
   })

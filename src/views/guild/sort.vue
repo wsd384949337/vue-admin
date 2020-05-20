@@ -8,11 +8,10 @@
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
           <el-table-column label="id" prop="unionId" align="center" width="165"></el-table-column>
-          <el-table-column label="公会名称" prop="unionName" align="center" width="165"></el-table-column>
           <el-table-column label="分组名称" prop="labelName" align="center" width="165"></el-table-column>
           <el-table-column label="备注" prop="remarks" align="center" width="165"></el-table-column>
           <el-table-column label="创建时间" prop="createdTime" align="center" width="165"></el-table-column>
-          <el-table-column  align="right" :label="操作">
+          <el-table-column  align="right" label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>
                 修改
@@ -27,9 +26,6 @@
 
       <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
         <el-form ref="dataForm" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="公会名称:" prop="unionId">
-            <el-input v-model="form.unionId"></el-input>
-          </el-form-item>
           <el-form-item label="分组名称:" prop="labelName">
             <el-input v-model="form.labelName"></el-input>
           </el-form-item>
@@ -48,7 +44,7 @@
 
 <script>
   import { getLabels, addLabel, updateLabel, removeLabel } from '@/api/guild/sort'
-
+  import { getUser } from '@/utils/auth'
   export default {
     data() {
       return {
@@ -63,7 +59,6 @@
         },
         input: '',
         form: {
-          unionName: undefined, //主键ID
           labelName: undefined, //主键ID
           remarks: undefined, //主键ID
         },
@@ -115,6 +110,9 @@
         })
       },
       submitForm() {
+        let user = JSON.parse(getUser())[0]
+        console.log(user)
+        this.form.unionId = user.unionNum
         this.$refs.dataForm.validate(valid => {
           if (valid) {
             if(this.dialogStatus === 'create'){

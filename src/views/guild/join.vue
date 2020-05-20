@@ -16,7 +16,7 @@
               {{ scope.row.state == 0 ?'申请中':scope.row.state == 1?'通过':'驳回' }}
             </template>
           </el-table-column>
-          <el-table-column  align="right" :label="操作">
+          <el-table-column  align="right" label="操作">
             <template slot-scope="scope">
               <el-button v-if="scope.row.state === 0" size="mini" type="primary" @click="successRow(scope.row, 1)" icon="el-icon-success" plain>
                 同意
@@ -107,7 +107,10 @@
     methods: {
       getList() {
         this.listLoading = true;
-        getUnionApplys(0).then(response => {
+        let addUrl = ''
+        if(this.listQuery.page !== 1){ addUrl = 'pageNum=' + this.listQuery.page + '&'  }
+        if(this.listQuery.limit !== 10){  addUrl = 'pageSize=' + this.listQuery.page + '&'  }
+        getUnionApplys(0, addUrl).then(response => {
           console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
