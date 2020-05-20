@@ -1,44 +1,40 @@
 <template>
   <div class="app-container">
     <cus-wraper>
-      <cus-filter-wraper>
-        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>
-      </cus-filter-wraper>
+<!--      <cus-filter-wraper>-->
+<!--        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>-->
+<!--      </cus-filter-wraper>-->
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
-          <el-table-column label="用户编号" prop="userId" align="center" width="165"></el-table-column>
-          <el-table-column label="所属公会" prop="unionName" align="center" width="165"></el-table-column>
-          <el-table-column label="所属分组" prop="userId" align="center" width="165"></el-table-column>
-          <el-table-column label="昵称" prop="userName" align="center" width="165"></el-table-column>
-          <el-table-column label="头像" prop="headPicture" align="center" width="165">
-            <template slot-scope="scope">
-              <img :src="scope.row.headPicture" class="headImg" alt="">
-            </template>
-          </el-table-column>
-          <el-table-column  align="right" :label="操作">
-            <template slot-scope="scope">
+          <el-table-column label="公会名称" prop="unionName" align="center" width="165"></el-table-column>
+          <el-table-column label="公会ID" prop="unionNum" align="center" width="165"></el-table-column>
+          <el-table-column label="会长昵称" prop="userName" align="center" width="165"></el-table-column>
+          <el-table-column label="会长头像" prop="headPicture" align="center" width="165"></el-table-column>
+          <el-table-column label="创建时间" prop="createdTime" align="center" width="165"></el-table-column>
+<!--          <el-table-column  align="right" :label="操作">-->
+<!--            <template slot-scope="scope">-->
 <!--              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>-->
 <!--                修改-->
 <!--              </el-button>-->
 <!--              <cus-del-btn @ok="handleDelete(scope.row)"/>-->
-              <el-button size="mini" type="danger" @click="deleteUser(scope.row)" icon="el-icon-edit" plain>
-                踢出工会
-              </el-button>
-              <el-button size="mini" type="primary" @click="changeLabel(scope.row)" icon="el-icon-edit" plain>
-                修改分组
-              </el-button>
-            </template>
-          </el-table-column>
+<!--            </template>-->
+<!--          </el-table-column>-->
         </el-table>
         <!-- 分页 -->
         <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
       </div>
 
       <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
-        <el-form ref="dataForm" :model="form" :rules="rules" label-width="80px" class="demo-ruleForm">
-          <el-form-item label="名称:" prop="labelName">
+        <el-form ref="dataForm" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="公会名称:" prop="unionId">
+            <el-input v-model="form.unionId"></el-input>
+          </el-form-item>
+          <el-form-item label="分组名称:" prop="labelName">
             <el-input v-model="form.labelName"></el-input>
+          </el-form-item>
+          <el-form-item label="备注:" prop="remarks">
+            <el-input v-model="form.remarks"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -51,8 +47,7 @@
 </template>
 
 <script>
-  import { getUionUsers, saveSysUser, deleteSysUser, deleteUser, bindLabel } from '@/api/guild/member'
-  import { getUser } from '@/utils/auth'
+  import { getUnions, addLabel, updateLabel, removeLabel } from '@/api/guild/turnover'
 
   export default {
     data() {
@@ -68,7 +63,9 @@
         },
         input: '',
         form: {
+          unionName: undefined, //主键ID
           labelName: undefined, //主键ID
+          remarks: undefined, //主键ID
         },
         dialogStatus: '',
         titleMap: {
@@ -88,7 +85,7 @@
     methods: {
       getList() {
         this.listLoading = true;
-        getUionUsers(this.listQuery).then(response => {
+        getUnions(this.listQuery).then(response => {
           console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
@@ -101,35 +98,51 @@
         this.dialogVisible = true
       },
       handleUpdate(row) {
+        //updateLabel
         this.form = Object.assign({}, row)
         this.dialogStatus = 'update'
         this.dialogVisible = true
       },
       handleDelete(row) {
-        let id = [row.id]
-        // deleteSysUser(id).then(response => {
-        //   if (response.code == 0) {
-        //     this.getList()
-        //     this.submitOk(response.message)
-        //   } else {
-        //     this.submitFail(response.message)
-        //   }
-        // })
+        let data = {'id' : row.id}
+        removeLabel(data).then(response => {
+          if (response.code == 0) {
+            this.getList()
+            // this.submitOk(response.message)
+          } else {
+            // this.submitFail(response.message)
+          }
+        })
       },
       submitForm() {
         this.$refs.dataForm.validate(valid => {
           if (valid) {
-            // saveSysUser(this.form).then(response => {
-            //   if (response.code == 0) {
-            //     this.getList()
-            //     this.submitOk(response.message)
-            //     this.dialogVisible = false
-            //   } else {
-            //     this.submitFail(response.message)
-            //   }
-            // }).catch(err => {
-            //   console.log(err)
-            // })
+            if(this.dialogStatus === 'create'){
+              addLabel(this.form).then(response => {
+                if (response.code == 0) {
+                  this.getList()
+                  // this.submitOk(response.message)
+                  this.dialogVisible = false
+                } else {
+                  // this.submitFail(response.message)
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }else{
+              updateLabel(this.form).then(response => {
+                if (response.code == 0) {
+                  this.getList()
+                  // this.submitOk(response.message)
+                  this.dialogVisible = false
+                } else {
+                  // this.submitFail(response.message)
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }
+
           }
         })
       },
@@ -143,20 +156,7 @@
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate() // 清除整个表单的校验
         }
-      },
-      deleteUser(data){
-        let user = JSON.parse(getUser())[0]
-        let text = {
-          "unionId": user.id,
-          "userId": data.userId
-        }
-        deleteUser(text).then(response => {
-          console.log(response)
-          this.getList()
-        })
-      },
-      changeLabel(){}
-
+      }
     }
   }
 </script>
@@ -172,8 +172,5 @@
   }
   .table-container /deep/ .el-table .cell{
     display:flex;
-  }
-  .headImg{
-    width:50px;
   }
 </style>

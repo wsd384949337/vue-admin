@@ -1,4 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router'
+import { setName } from '@/utils/auth'
+
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -57,6 +59,8 @@ const actions = {
       // } else {
       //   accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       // }
+
+      setName(111)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

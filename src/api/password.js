@@ -1,18 +1,18 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function UnionChangePasswordDTO(data) {
   return request({
-    url: '/union/union/loginUnion',
+    url: '/union/union/changePassword',
     method: 'post',
     data
   })
 }
 
-export function getInfo(userId) {
+export function getInfo(token) {
   return request({
-    url: '/union/unionUser/getLoginInfo?userId=' + userId,
+    url: '/union/unionUser/getLoginInfo',
     method: 'get',
-    // params: { 'userId': token }
+    params: { 'X-Token': token }
   })
 }
 

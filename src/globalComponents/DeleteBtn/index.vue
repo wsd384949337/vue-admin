@@ -21,7 +21,7 @@
         <i class="el-icon-warning" style="color:#FAAD14;line-height: 3.3;margin-right: 10px;"></i>
         <p>确定删除此条数据吗？</p>
       </div>
-      <p><span style="color:#F04134;margin-left: 26px;">删除后不可恢复</span> <span style="color:#ACACAC;">，你还要继续吗？</span></p>
+      <p style="text-align: center;"><span style="color:#F04134;margin-left: 26px;">删除后不可恢复</span> <span style="color:#ACACAC;">，你还要继续吗？</span></p>
         <span slot="footer" class="dialog-footer">
           <el-button @click="visible = false">取 消</el-button>
           <el-button type="primary" @click="handleClick">确 定</el-button>

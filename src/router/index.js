@@ -75,47 +75,47 @@ export const constantRoutes = [
       {
         path: 'quit',
         name: 'quit',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/guild/quit'),
         meta: { title: '申请退出', icon: 'eye' }
       },
       {
         path: 'sort',
         name: 'sort',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '分类管理', icon: 'tree' }
+        component: () => import('@/views/guild/sort'),
+        meta: { title: '分组管理', icon: 'tree' }
       }
     ]
   },
+  // {
+  //   path: '/turnover',
+  //   component: Layout,
+  //   name: 'turnover',
+  //   meta: { title: '公会列表', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'turnover',
+  //       name: 'turnover',
+  //       component: () => import('@/views/guild/turnover'),
+  //       meta: { title: '公会列表', icon: 'form' }
+  //     }
+  //   ]
+  // },
   {
-    path: '/turnover',
+    path: '/system',
     component: Layout,
-    name: 'turnover',
-    meta: { title: '流水管理', icon: 'example' },
-    children: [
-      {
-        path: 'chatRoom',
-        name: 'chatRoom',
-        component: () => import('@/views/table/index'),
-        meta: { title: '聊天室流水', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/example',
-    component: Layout,
-    name: 'Example',
+    name: 'system',
     meta: { title: '设置', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
+        path: 'password',
+        name: 'Password',
+        component: () => import('@/views/system/password'),
         meta: { title: '修改密码', icon: 'password' }
       },
       {
         path: 'table',
         name: 'Table',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/system/password'),
         meta: { title: '联系客服', icon: 'password' }
       }
     ]

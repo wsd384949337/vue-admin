@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">公会名： {{ name }}</div>
-    <div class="dashboard-text">公会id： <span v-for="role in roles" :key="role">{{ role }}</span></div>
+    <div class="dashboard-text">公会名： {{ user.unionName }}</div>
+    <div class="dashboard-text">公会id： {{ user.unionNum }}</div>
 
     <el-row :gutter="12">
       <el-col :span="6">
@@ -29,23 +29,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+  import { getUser } from '@/utils/auth'
 export default {
   name: 'Dashboard',
   computed: {
-    ...mapGetters([
-      'name',
-      'roles'
-    ])
   },
   data() {
     return {
       list: {
         update: '编辑',
         create: '创建'
-      }
+      },
+      user:{}
     }
+  },
+  mounted() {
+    let user = JSON.parse(getUser())[0]
+    this.user = user
   }
 }
 </script>

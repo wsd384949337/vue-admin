@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <cus-wraper>
-<!--      <cus-filter-wraper>-->
-<!--        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>-->
-<!--      </cus-filter-wraper>-->
+      <!--      <cus-filter-wraper>-->
+      <!--        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>-->
+      <!--      </cus-filter-wraper>-->
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
@@ -107,7 +107,7 @@
     methods: {
       getList() {
         this.listLoading = true;
-        getUnionApplys(0).then(response => {
+        getUnionApplys(1).then(response => {
           console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total

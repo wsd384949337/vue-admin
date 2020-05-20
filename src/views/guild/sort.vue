@@ -1,29 +1,23 @@
 <template>
   <div class="app-container">
     <cus-wraper>
-<!--      <cus-filter-wraper>-->
-<!--        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>-->
-<!--      </cus-filter-wraper>-->
+      <cus-filter-wraper>
+        <el-button type="primary" @click="handleCreate" icon="el-icon-plus">添加</el-button>
+      </cus-filter-wraper>
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
-          <el-table-column label="用户编号" prop="userCode" align="center" width="165"></el-table-column>
-          <el-table-column label="所属公会" prop="unionName" align="center" width="165"></el-table-column>
-          <el-table-column label="昵称" prop="userName" align="center" width="165"></el-table-column>
-          <el-table-column label="申请时间" prop="createdTime" align="center" width="165"></el-table-column>
-          <el-table-column label="申请状态" prop="state" align="center" width="165">
-            <template slot-scope="scope">
-              {{ scope.row.state == 0 ?'申请中':scope.row.state == 1?'通过':'驳回' }}
-            </template>
-          </el-table-column>
+          <el-table-column label="id" prop="unionId" align="center" width="165"></el-table-column>
+          <el-table-column label="公会名称" prop="unionName" align="center" width="165"></el-table-column>
+          <el-table-column label="分组名称" prop="labelName" align="center" width="165"></el-table-column>
+          <el-table-column label="备注" prop="remarks" align="center" width="165"></el-table-column>
+          <el-table-column label="创建时间" prop="createdTime" align="center" width="165"></el-table-column>
           <el-table-column  align="right" :label="操作">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.state === 0" size="mini" type="primary" @click="successRow(scope.row, 1)" icon="el-icon-success" plain>
-                同意
+              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>
+                修改
               </el-button>
-              <el-button v-if="scope.row.state === 0" size="mini" type="danger" @click="changerow = scope.row;dialogVisible = true" icon="el-icon-error" plain>
-                拒绝
-              </el-button>
+              <cus-del-btn @ok="handleDelete(scope.row)"/>
             </template>
           </el-table-column>
         </el-table>
@@ -31,27 +25,29 @@
         <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
       </div>
 
-      <el-dialog title="拒绝理由" :visible.sync="dialogVisible" width="600px" v-dialogDrag @close="handleDialogClose">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.label">
-          </el-option>
-        </el-select>
+      <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
+        <el-form ref="dataForm" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="公会名称:" prop="unionId">
+            <el-input v-model="form.unionId"></el-input>
+          </el-form-item>
+          <el-form-item label="分组名称:" prop="labelName">
+            <el-input v-model="form.labelName"></el-input>
+          </el-form-item>
+          <el-form-item label="备注:" prop="remarks">
+            <el-input v-model="form.remarks"></el-input>
+          </el-form-item>
+        </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false"> 取消 </el-button>
           <el-button type="primary" @click="submitForm"> 确定 </el-button>
         </span>
       </el-dialog>
-
     </cus-wraper>
   </div>
 </template>
 
 <script>
-  import { getUnionApplys, addLabel, audit, removeLabel } from '@/api/guild/join'
+  import { getLabels, addLabel, updateLabel, removeLabel } from '@/api/guild/sort'
 
   export default {
     data() {
@@ -71,7 +67,6 @@
           labelName: undefined, //主键ID
           remarks: undefined, //主键ID
         },
-        changerow:{},
         dialogStatus: '',
         titleMap: {
           update: '编辑',
@@ -81,24 +76,7 @@
           labelName: [
             {required: true, message: '请输入名称', trigger: 'blur'},
           ]
-        },
-        options: [{
-          value: '1',
-          label: '拒绝理由1'
-        }, {
-          value: '2',
-          label: '拒绝理由2'
-        }, {
-          value: '3',
-          label: '拒绝理由3'
-        }, {
-          value: '4',
-          label: '拒绝理由4'
-        }, {
-          value: '5',
-          label: '拒绝理由5'
-        }],
-        value: ''
+        }
       }
     },
     created() {
@@ -107,7 +85,7 @@
     methods: {
       getList() {
         this.listLoading = true;
-        getUnionApplys(0).then(response => {
+        getLabels(this.listQuery).then(response => {
           console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
@@ -136,29 +114,49 @@
           }
         })
       },
-      successRow(row, type){
-        console.log(row)
-        let data = {
-          "unionApplyId": row.id,
-          "state": type,
-          "remarks": type === 2?this.value:""
-        }
-        audit(data).then(response => {
-          console.log(response)
-          this.getList()
+      submitForm() {
+        this.$refs.dataForm.validate(valid => {
+          if (valid) {
+            if(this.dialogStatus === 'create'){
+              addLabel(this.form).then(response => {
+                if (response.code == 0) {
+                  this.getList()
+                  // this.submitOk(response.message)
+                  this.dialogVisible = false
+                } else {
+                  // this.submitFail(response.message)
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }else{
+              updateLabel(this.form).then(response => {
+                if (response.code == 0) {
+                  this.getList()
+                  // this.submitOk(response.message)
+                  this.dialogVisible = false
+                } else {
+                  // this.submitFail(response.message)
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }
+
+          }
         })
       },
-      submitForm(){
-        this.dialogVisible = false
-        this.successRow(this.changerow, 2)
+      resetForm() {
+        this.form = {
+          id: undefined, //主键ID
+        }
       },
+      // 监听dialog关闭时的处理事件
       handleDialogClose() {
         if (this.$refs['dataForm']) {
           this.$refs['dataForm'].clearValidate() // 清除整个表单的校验
         }
       }
-
-
     }
   }
 </script>

@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken, setName } from '@/utils/auth'
+import { getToken, setToken, removeToken, setName, setUser, getUser } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
@@ -37,9 +37,10 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ unionNum: username.trim(), password: password }).then(response => {
-        const data = response
-        commit('SET_TOKEN', data.msg)
-        setToken(data.msg)
+        const data = response.data
+        commit('SET_TOKEN', data.token)
+        setToken(data.token)
+        setUser(JSON.stringify(data.unions))
         resolve()
       }).catch(error => {
         reject(error)
@@ -50,20 +51,22 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      let user = JSON.parse(getUser())[0]
+      getInfo(user.userId).then(response => {
         const { data } = response
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { nickName, avatar } = data
-        commit('SET_NAME', nickName)
-        setName(nickName)
-        commit('SET_AVATAR', avatar)
+        const { nickname, head_picture } = data
+        commit('SET_NAME', nickname)
+        setName(nickname)
+        commit('SET_AVATAR', head_picture)
         resolve(data)
       }).catch(error => {
         reject(error)
       })
+      resolve()
     })
   },
 
