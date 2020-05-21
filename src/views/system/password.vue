@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <div style="font-size: 20px;padding-bottom:50px; ">修改密码</div>
     <el-form ref="dataForm" :model="form" :rules="rules" label-width="130px" class="demo-ruleForm">
       <el-form-item label="旧密码:" prop="oldPassword">
         <el-input v-model="form.oldPassword"></el-input>

@@ -26,7 +26,7 @@
 <!--              </el-button>-->
 <!--              <cus-del-btn @ok="handleDelete(scope.row)"/>-->
               <el-button size="mini" type="danger" @click="deleteUser(scope.row)" icon="el-icon-edit" plain>
-                踢出工会
+                踢出公会
               </el-button>
               <el-button size="mini" type="primary" @click="changeLabel(scope.row)" icon="el-icon-edit" plain>
                 修改分组

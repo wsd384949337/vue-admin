@@ -16,6 +16,14 @@ export function getInfo(userId) {
   })
 }
 
+export function getUnionMemberCount(userId) {
+  return request({
+    url: '/union/unionUser/getUnionMemberCount?unionId=' + userId,
+    method: 'get',
+    // params: { 'userId': token }
+  })
+}
+
 export function logout() {
   return request({
     url: '/vue-admin-template/user/logout',

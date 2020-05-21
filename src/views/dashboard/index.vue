@@ -6,22 +6,22 @@
     <el-row :gutter="12">
       <el-col :span="6">
         <el-card shadow="always">
-          今日流水 <p>{{123}}</p>
+          今日流水 <p>{{0}}</p>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          昨日流水 <p>123</p>
+          昨日流水 <p>0</p>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          会员人数 <p>123</p>
+          会员人数 <p>{{list.unionApplys}}</p>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          待审核人数 <p>123</p>
+          待审核人数 <p>{{list.unionMembers}}</p>
         </el-card>
       </el-col>
     </el-row>
@@ -30,7 +30,9 @@
 
 <script>
   import { getUser } from '@/utils/auth'
-export default {
+  import { getUnionMemberCount } from '@/api/user'
+
+  export default {
   name: 'Dashboard',
   computed: {
   },
@@ -40,12 +42,16 @@ export default {
         update: '编辑',
         create: '创建'
       },
-      user:{}
+      user: {},
+      list: {}
     }
   },
   mounted() {
     let user = JSON.parse(getUser())[0]
     this.user = user
+    getUnionMemberCount(user.id).then(response => {
+      this.list = response.data
+    })
   }
 }
 </script>
@@ -56,7 +62,7 @@ export default {
     margin: 30px;
   }
   &-text {
-    font-size: 30px;
+    font-size: 18px;
     line-height: 46px;
   }
 }

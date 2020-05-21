@@ -110,14 +110,14 @@ export const constantRoutes = [
         path: 'password',
         name: 'Password',
         component: () => import('@/views/system/password'),
-        meta: { title: '修改密码', icon: 'password' }
+        meta: { title: '设置', icon: 'password' }
       },
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/system/password'),
-        meta: { title: '联系客服', icon: 'password' }
-      }
+      // {
+      //   path: 'table',
+      //   name: 'Table',
+      //   component: () => import('@/views/system/password'),
+      //   meta: { title: '联系客服', icon: 'password' }
+      // }
     ]
   }
 

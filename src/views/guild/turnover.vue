@@ -7,7 +7,7 @@
           <el-button type="primary" @click="getList" icon="el-icon-search">查询</el-button>
           <el-button type="info" @click="reGetList" icon="el-icon-search">重置</el-button>
         </div>
-        <el-button type="primary" @click="handleCreate" icon="el-icon-search">创建工会</el-button>
+        <el-button type="primary" @click="handleCreate" icon="el-icon-search">创建公会</el-button>
       </cus-filter-wraper>
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
@@ -24,7 +24,7 @@
           <el-table-column  align="right" :label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>
-                解散工会
+                解散公会
               </el-button>
 <!--              <cus-del-btn @ok="handleDelete(scope.row)"/>-->
             </template>
