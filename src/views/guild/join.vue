@@ -32,14 +32,7 @@
       </div>
 
       <el-dialog title="拒绝理由" :visible.sync="dialogVisible" width="600px" v-dialogDrag @close="handleDialogClose">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.label">
-          </el-option>
-        </el-select>
+        <el-input  v-model="value" placeholder="请输入拒绝理由" style="width:200px;margin: 0 10px;" clearable></el-input>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false"> 取消 </el-button>
           <el-button type="primary" @click="submitForm"> 确定 </el-button>
@@ -82,22 +75,6 @@
             {required: true, message: '请输入名称', trigger: 'blur'},
           ]
         },
-        options: [{
-          value: '1',
-          label: '拒绝理由1'
-        }, {
-          value: '2',
-          label: '拒绝理由2'
-        }, {
-          value: '3',
-          label: '拒绝理由3'
-        }, {
-          value: '4',
-          label: '拒绝理由4'
-        }, {
-          value: '5',
-          label: '拒绝理由5'
-        }],
         value: ''
       }
     },
@@ -146,13 +123,17 @@
           "state": type,
           "remarks": type === 2?this.value:""
         }
+        if(type === 2 && this.value ===''){
+          this.$message({message: '请输入拒绝理由', type: 'warning'});
+          return
+        }
+        this.dialogVisible = false
         audit(data).then(response => {
           console.log(response)
           this.getList()
         })
       },
       submitForm(){
-        this.dialogVisible = false
         this.successRow(this.changerow, 2)
       },
       handleDialogClose() {
