@@ -110,7 +110,7 @@
         })
       },
       submitForm() {
-        let user = JSON.parse(getUser())[0]
+        let user = JSON.parse(getUser())
         console.log(user)
         this.form.unionId = user.unionNum
         this.$refs.dataForm.validate(valid => {

@@ -34,13 +34,13 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password, type } = userInfo
     return new Promise((resolve, reject) => {
-      login({ unionNum: username.trim(), password: password }).then(response => {
+      login({ unionNum: username.trim(), password: password, type: type }).then(response => {
         const data = response.data
         commit('SET_TOKEN', data.token)
         setToken(data.token)
-        setUser(JSON.stringify(data.unions))
+        setUser(JSON.stringify(data))
         resolve()
       }).catch(error => {
         reject(error)
@@ -51,7 +51,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      let user = JSON.parse(getUser())[0]
+      let user = JSON.parse(getUser())
       console.log(user)
       getInfo(user.userId).then(response => {
         const { data } = response

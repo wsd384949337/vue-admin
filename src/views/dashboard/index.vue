@@ -47,7 +47,7 @@
     }
   },
   mounted() {
-    let user = JSON.parse(getUser())[0]
+    let user = JSON.parse(getUser())
     this.user = user
     getUnionMemberCount(user.id).then(response => {
       this.list = response.data

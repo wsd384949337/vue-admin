@@ -141,7 +141,7 @@
         })
       },
       submitForm() {
-        let user = JSON.parse(getUser())[0]
+        let user = JSON.parse(getUser())
         this.form.userId = user.id
         this.$refs.dataForm.validate(valid => {
           if (valid) {

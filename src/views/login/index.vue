@@ -41,7 +41,10 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-radio v-model="loginForm.type" label='0' style="color: white;">娱乐公会</el-radio>
+      <el-radio v-model="loginForm.type" label='1' style="color: white;">派单公会</el-radio>
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;margin-top: 20px;" @click.native.prevent="handleLogin">登录</el-button>
 
     </el-form>
   </div>
@@ -70,7 +73,8 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        type: '0'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],

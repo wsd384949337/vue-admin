@@ -83,6 +83,12 @@ export const constantRoutes = [
         name: 'sort',
         component: () => import('@/views/guild/sort'),
         meta: { title: '分组管理', icon: 'sort' }
+      },
+      {
+        path: 'record',
+        name: 'record',
+        component: () => import('@/views/guild/record'),
+        meta: { title: '申请记录', icon: 'record' }
       }
     ]
   },

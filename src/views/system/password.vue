@@ -2,14 +2,14 @@
   <div class="app-container">
     <div style="font-size: 20px;padding-bottom:50px; ">修改密码</div>
     <el-form ref="dataForm" :model="form" :rules="rules" label-width="130px" class="demo-ruleForm">
-      <el-form-item label="旧密码:" prop="oldPassword">
-        <el-input v-model="form.oldPassword"></el-input>
+      <el-form-item label="旧密码:" prop="oldPassword" width="300">
+        <el-input v-model="form.oldPassword" show-password></el-input>
       </el-form-item>
       <el-form-item label="新密码:" prop="newPassword">
-        <el-input v-model="form.newPassword"></el-input>
+        <el-input v-model="form.newPassword" show-password></el-input>
       </el-form-item>
       <el-form-item label="再次输入新密码:" prop="rePassword">
-        <el-input v-model="form.rePassword"></el-input>
+        <el-input v-model="form.rePassword" show-password></el-input>
       </el-form-item>
     </el-form>
     <el-button size="mini" type="primary" @click="changePw" icon="el-icon-edit" plain>
@@ -56,7 +56,7 @@
 
         this.$refs.dataForm.validate(valid => {
           if (valid) {
-            let user = JSON.parse(getUser())[0]
+            let user = JSON.parse(getUser())
             let data = {
               unionId : user.id,
               oldPassword : this.form.oldPassword,
@@ -88,6 +88,9 @@
 </script>
 <style lang="scss" scoped>
   .app-container /deep/ .el-input__inner{
+    width: 300px;
+  }
+  .app-container /deep/ .el-form-item__content{
     width: 300px;
   }
   .demo-ruleForm{margin-bottom: 100px;}

@@ -2,7 +2,7 @@
   <div class="app-container">
     <cus-wraper>
       <cus-filter-wraper>
-        <el-input  v-model="listQuery.userCode" placeholder="请输入用户Code" style="width:200px;margin: 0 10px;" clearable></el-input>
+        <el-input  v-model="listQuery.userCode" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入用户Code" style="width:200px;margin: 0 10px;" clearable></el-input>
         <el-button type="primary" @click="getList" icon="el-icon-search">查询</el-button>
         <el-button type="info" @click="reGetList" icon="el-icon-search">重置</el-button>
       </cus-filter-wraper>
@@ -107,7 +107,9 @@
         let addUrl = ''
         if(this.listQuery.page !== 1){ addUrl += 'pageNum=' + this.listQuery.page + '&'  }
         if(this.listQuery.limit !== 10){  addUrl += 'pageSize=' + this.listQuery.page + '&'  }
-        if(this.listQuery.userCode !== undefined){  addUrl += 'userCode=' + this.listQuery.userCode + '&'  }
+        this.listQuery.userCode = this.listQuery.userCode===undefined?undefined:this.listQuery.userCode.replace(/[^\d]/g,'')
+        if(this.listQuery.userCode !== undefined){  addUrl += 'userCode=' + this.listQuery.userCode }
+
         getUionUsers(addUrl).then(response => {
           console.log(response.records)
           this.list = response.data.records
@@ -183,7 +185,7 @@
         }
       },
       deleteUser(data){
-        let user = JSON.parse(getUser())[0]
+        let user = JSON.parse(getUser())
         let text = {
           "unionId": user.id,
           "userId": data.userId
