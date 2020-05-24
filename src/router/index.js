@@ -92,20 +92,20 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/turnover',
-  //   component: Layout,
-  //   name: 'turnover',
-  //   meta: { title: '公会列表', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'turnover',
-  //       name: 'turnover',
-  //       component: () => import('@/views/guild/turnover'),
-  //       meta: { title: '公会列表', icon: 'form' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/water',
+    component: Layout,
+    name: 'water',
+    meta: { title: '公会流水', icon: 'example' },
+    children: [
+      {
+        path: 'unionWater',
+        name: 'unionWater',
+        component: () => import('@/views/water/unionWater'),
+        meta: { title: '公会流水', icon: 'form' }
+      }
+    ]
+  },
   {
     path: '/system',
     component: Layout,

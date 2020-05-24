@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getLabels() {
+export function getLabels(type, userId, url) {
   return request({
     url: '/union/unionLabel/getLabels',
     method: 'get'

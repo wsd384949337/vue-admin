@@ -52,7 +52,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       let user = JSON.parse(getUser())
-      console.log(user)
+      // console.log(user)
       getInfo(user.userId).then(response => {
         const { data } = response
         if (!data) {
@@ -82,6 +82,15 @@ const actions = {
       }).catch(error => {
         reject(error)
       })
+    })
+  },
+
+  // 前端 登出
+  FedLogOut({ commit }) {
+    return new Promise(resolve => {
+      commit('SET_TOKEN', '')
+      removeToken()
+      resolve()
     })
   },
 

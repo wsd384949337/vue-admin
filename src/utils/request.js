@@ -5,8 +5,8 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://49.233.11.193:10013', // 测试环境
-  // baseURL: 'http://47.111.161.113/api', // 正式环境
+  // baseURL: 'http://49.233.11.193:10013', // 测试环境
+  baseURL: 'http://47.111.161.113/api', // 正式环境
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000, // request timeout
@@ -30,7 +30,7 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+    // console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -61,14 +61,18 @@ service.interceptors.response.use(
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
+        // MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        //   confirmButtonText: 'Re-Login',
+        //   cancelButtonText: 'Cancel',
+        //   type: 'warning'
+        // }).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
+        // })
+      } else if (res.code === 401 || res.code === 403 || res.code === -1 || res.code === 501 || res.code === 6016) {
+        store.dispatch('user/FedLogOut').then(() => {
+          location.reload() // 为了重新实例化vue-router对象 避免bug
         })
       }
       return Promise.reject(new Error(res.msg || 'Error'))
@@ -77,7 +81,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
+    // console.log('err' + error) // for debug
     Message({
       message: error.msg,
       type: 'error',

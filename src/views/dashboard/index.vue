@@ -16,12 +16,12 @@
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          会员人数 <p>{{list.unionApplys}}</p>
+          会员人数 <p>{{list.unionMembers}}</p>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          待审核人数 <p>{{list.unionMembers}}</p>
+          待审核人数 <p>{{list.unionApplys}}</p>
         </el-card>
       </el-col>
     </el-row>
@@ -38,10 +38,6 @@
   },
   data() {
     return {
-      list: {
-        update: '编辑',
-        create: '创建'
-      },
       user: {},
       list: {}
     }

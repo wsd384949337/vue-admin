@@ -21,7 +21,7 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
+        <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="getList"/>
       </div>
 
       <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
@@ -53,8 +53,8 @@
         listLoading: true,
         total: 0,
         listQuery: {
-          page: 1,
-          limit: 10,
+          pageNum: 1,
+          pageSize: 10,
           labelName: undefined
         },
         input: '',
@@ -81,7 +81,7 @@
       getList() {
         this.listLoading = true;
         getLabels(this.listQuery).then(response => {
-          console.log(response.records)
+          // console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
@@ -111,7 +111,7 @@
       },
       submitForm() {
         let user = JSON.parse(getUser())
-        console.log(user)
+        // console.log(user)
         this.form.unionId = user.unionNum
         this.$refs.dataForm.validate(valid => {
           if (valid) {

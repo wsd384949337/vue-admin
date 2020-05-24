@@ -2,14 +2,14 @@
   <div class="app-container">
     <cus-wraper>
       <cus-filter-wraper>
-        <el-input  v-model="listQuery.userCode" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入用户Code" style="width:200px;margin: 0 10px;" clearable></el-input>
+        <el-input  v-model="listQuery.userId" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入用户Id" style="width:200px;margin: 0 10px;" clearable></el-input>
         <el-button type="primary" @click="getList" icon="el-icon-search">查询</el-button>
         <el-button type="info" @click="reGetList" icon="el-icon-search">重置</el-button>
       </cus-filter-wraper>
       <div class="table-container">
         <el-table v-loading="listLoading" :data="list" size="mini" fit element-loading-text="Loading"
                   highlight-current-row >
-          <el-table-column label="用户编号" prop="userCode" align="center"></el-table-column>
+          <el-table-column label="用户Id" prop="userId" align="center"></el-table-column>
           <el-table-column label="所属公会" prop="unionName" align="center"></el-table-column>
           <el-table-column label="头像" prop="headPicture" align="center">
             <template slot-scope="scope">
@@ -31,7 +31,7 @@
           <el-table-column label="原因" prop="remarks" align="center"></el-table-column>
         </el-table>
         <!-- 分页 -->
-        <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
+        <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="getList"/>
       </div>
 
     </cus-wraper>
@@ -40,7 +40,7 @@
 
 <script>
   import { getUionUsers } from '@/api/guild/record'
-
+  import { getUser } from '@/utils/auth'
   export default {
     data() {
       return {
@@ -49,9 +49,9 @@
         listLoading: true,
         total: 0,
         listQuery: {
-          page: 1,
-          limit: 10,
-          userCode: undefined
+          pageNum: 1,
+          pageSize: 10,
+          userId: undefined
         },
         input: '',
         form: {
@@ -76,14 +76,15 @@
     methods: {
       getList() {
         this.listLoading = true;
+        // let user = JSON.parse(getUser())
         let addUrl = ''
-        if(this.listQuery.page !== 1){ addUrl += 'pageNum=' + this.listQuery.page + '&'  }
-        if(this.listQuery.limit !== 10){  addUrl += 'pageSize=' + this.listQuery.page + '&'  }
-        this.listQuery.userCode = this.listQuery.userCode===undefined?undefined:this.listQuery.userCode.replace(/[^\d]/g,'')
-        if(this.listQuery.userCode !== undefined){  addUrl += 'userCode=' + this.listQuery.userCode  }
+        if(this.listQuery.pageNum !== 1){ addUrl += 'pageNum=' + this.listQuery.pageNum + '&'  }
+        if(this.listQuery.pageSize !== 10){  addUrl += 'pageSize=' + this.listQuery.pageNum + '&'  }
+        this.listQuery.userId = this.listQuery.userId===undefined?undefined:this.listQuery.userId.replace(/[^\d]/g,'')
+        if(this.listQuery.userId !== undefined){  addUrl += 'userId=' + this.listQuery.userId  }
 
         getUionUsers(addUrl).then(response => {
-          console.log(response.records)
+          // console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
           this.listLoading = false
@@ -91,9 +92,9 @@
       },
       reGetList(){
         this.listQuery= {
-          page: 1,
-          limit: 10,
-          userCode: undefined
+          pageNum: 1,
+          pageSize: 10,
+          userId: undefined
         }
       },
 

@@ -63,7 +63,7 @@
               newPassword : this.form.newPassword,
             }
             UnionChangePasswordDTO(data).then(response => {
-              console.log(response)
+              // console.log(response)
               if(response.code === 0){
                 that.logout()
               }else{

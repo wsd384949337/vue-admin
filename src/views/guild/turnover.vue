@@ -31,7 +31,7 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
+        <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="getList"/>
       </div>
 
       <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
@@ -67,8 +67,8 @@
         listLoading: true,
         total: 0,
         listQuery: {
-          page: 1,
-          limit: 10,
+          pageNum: 1,
+          pageSize: 10,
           unionNum: undefined
         },
         input: '',
@@ -102,8 +102,8 @@
       getList() {
         this.listLoading = true;
         let addUrl = ''
-        if(this.listQuery.page !== 1){ addUrl = 'pageNum=' + this.listQuery.page + '&'  }
-        if(this.listQuery.limit !== 10){  addUrl = 'pageSize=' + this.listQuery.page + '&'  }
+        if(this.listQuery.pageNum !== 1){ addUrl = 'pageNum=' + this.listQuery.pageNum + '&'  }
+        if(this.listQuery.pageSize !== 10){  addUrl = 'pageSize=' + this.listQuery.pageNum + '&'  }
         if(this.listQuery.unionNum !== undefined){  addUrl = 'unionNum=' + this.listQuery.unionNum + '&'  }
         getUnions(addUrl).then(response => {
           this.list = [response.data.records[0]]
@@ -113,8 +113,8 @@
       },
       reGetList(){
         this.listQuery= {
-          page: 1,
-          limit: 10,
+          pageNum: 1,
+          pageSize: 10,
           unionNum: undefined
         }
       },
