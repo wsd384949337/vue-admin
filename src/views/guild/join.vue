@@ -13,10 +13,10 @@
           <el-table-column label="申请时间" prop="createdTime" align="center" width="165"></el-table-column>
           <el-table-column label="申请状态" prop="state" align="center" width="165">
             <template slot-scope="scope">
-              {{ scope.row.state == 0 ?'申请中':scope.row.state == 1?'通过':'驳回' }}
+              {{ scope.row.state === 0 ?'申请中':scope.row.state === 1?'通过':'驳回' }}
             </template>
           </el-table-column>
-          <el-table-column  align="right" label="操作">
+          <el-table-column align="right" label="操作" width="195">
             <template slot-scope="scope">
               <el-button v-if="scope.row.state === 0" size="mini" type="primary" @click="successRow(scope.row, 1)" icon="el-icon-success" plain>
                 同意
@@ -31,7 +31,7 @@
         <cus-pagination v-show="total>0" :total="total" :page.sync="listQuery.pageNum" :limit.sync="listQuery.pageSize" @pagination="getList"/>
       </div>
 
-      <el-dialog title="拒绝理由" :visible.sync="dialogVisible" width="600px" v-dialogDrag @close="handleDialogClose">
+      <el-dialog title="拒绝理由" :visible.sync="dialogVisible" width="40%" v-dialogDrag @close="handleDialogClose">
         <el-input  v-model="value" placeholder="请输入拒绝理由" style="width:200px;margin: 0 10px;" clearable></el-input>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false"> 取消 </el-button>
@@ -62,7 +62,7 @@
         form: {
           unionName: undefined, //主键ID
           labelName: undefined, //主键ID
-          remarks: undefined, //主键ID
+          remarks: undefined, // 主键ID
         },
         changerow:{},
         dialogStatus: '',

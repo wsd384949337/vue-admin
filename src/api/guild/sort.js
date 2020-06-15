@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getLabels() {
+export function getLabels(id) {
   return request({
-    url: '/union/unionLabel/getLabels',
+    url: '/union/unionLabel/getLabels?unionId=' + id,
     method: 'get'
   })
 }

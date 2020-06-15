@@ -79,8 +79,11 @@
     },
     methods: {
       getList() {
+        let user = JSON.parse(getUser())
+        // // console.log(user)
+        // this.listQuery.unionId = user.unionNum
         this.listLoading = true;
-        getLabels(this.listQuery).then(response => {
+        getLabels(user.unionNum).then(response => {
           // console.log(response.records)
           this.list = response.data.records
           this.total = response.data.total
@@ -111,8 +114,8 @@
       },
       submitForm() {
         let user = JSON.parse(getUser())
-        // console.log(user)
-        this.form.unionId = user.unionNum
+        // 公会id
+        this.form.unionId = user.id
         this.$refs.dataForm.validate(valid => {
           if (valid) {
             if(this.dialogStatus === 'create'){
@@ -171,4 +174,5 @@
   .table-container /deep/ .el-table .cell{
     display:flex;
   }
+
 </style>

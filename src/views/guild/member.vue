@@ -19,7 +19,7 @@
               <img :src="scope.row.headPicture" class="headImg" alt="">
             </template>
           </el-table-column>
-          <el-table-column  align="right" label="操作">
+          <el-table-column  align="right" label="操作" width="265">
             <template slot-scope="scope">
 <!--              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)" icon="el-icon-edit" plain>-->
 <!--                修改-->
@@ -42,7 +42,7 @@
         <el-form ref="dataForm" :model="form" :rules="rules" label-width="120px" class="demo-ruleForm">
           <el-form-item label="昵称:" prop="userName">{{form.userName}}</el-form-item>
           <el-form-item label="所属公会:" prop="unionName">{{form.unionName}}</el-form-item>
-          <el-form-item label="所属分组:" prop="labelName">{{form.userId}}</el-form-item>
+          <el-form-item label="所属分组:" prop="labelName">{{formLabelName}}</el-form-item>
           <el-form-item label="设置分组:" prop="labelName">
             <el-select v-model="form.labelName" placeholder="请选择">
               <el-option
@@ -94,6 +94,7 @@
           ]
         },
         labelList:[],
+        formLabelName:''
       }
     },
     created() {
@@ -125,7 +126,8 @@
         }
       },
       getLabels(){
-        getLabels().then(response => {
+        let user = JSON.parse(getUser())
+        getLabels(user.unionNum).then(response => {
           // console.log(response.records)
           this.labelList = response.data.records
         })
@@ -160,7 +162,7 @@
         this.$refs.dataForm.validate(valid => {
           if (valid) {
             bindLabel(data).then(response => {
-              if (response.code == 0) {
+              if (response.code === 0) {
                 this.getList()
                 // this.submitOk(response.message)
                 this.dialogVisible = false
@@ -175,7 +177,7 @@
       },
       resetForm() {
         this.form = {
-          id: undefined, //主键ID
+          id: undefined, // 主键ID
         }
       },
       // 监听dialog关闭时的处理事件
@@ -197,6 +199,7 @@
       },
       changeLabel(data){
         this.form = Object.assign({}, data)
+        this.formLabelName = this.form.labelName
         this.dialogStatus = 'update'
         this.dialogVisible = true
       }

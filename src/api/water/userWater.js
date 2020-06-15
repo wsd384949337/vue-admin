@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getUnionWater(data) {
   return request({
-    url: '/union/unionWater/getUnionWater',
+    url: '/union/unionUserDayOrderDataRecord/getUserWeekOrder',
     method: 'post',
     data
   })

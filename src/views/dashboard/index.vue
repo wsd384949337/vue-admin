@@ -6,12 +6,12 @@
     <el-row :gutter="12">
       <el-col :span="6">
         <el-card shadow="always">
-          今日流水 <p>{{0}}</p>
+          今日流水 <p>{{list.today}}</p>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          昨日流水 <p>0</p>
+          昨日流水 <p>{{list.yesterday}}</p>
         </el-card>
       </el-col>
       <el-col :span="6">

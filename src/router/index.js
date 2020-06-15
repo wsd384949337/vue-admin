@@ -102,7 +102,13 @@ export const constantRoutes = [
         path: 'unionWater',
         name: 'unionWater',
         component: () => import('@/views/water/unionWater'),
-        meta: { title: '公会流水', icon: 'form' }
+        meta: { title: '公会收益', icon: 'form' }
+      },
+      {
+        path: 'userWater',
+        name: 'userWater',
+        component: () => import('@/views/water/userWater'),
+        meta: { title: '成员收益', icon: 'form' }
       }
     ]
   },
